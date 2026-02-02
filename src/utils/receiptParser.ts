@@ -1,25 +1,33 @@
 import type { ReceiptItem } from '../types'
 
-const SKIP_WORDS = [
-  'yhteensä', 'alennus', 'plussa', 'tasaerä', 'plussasetti',
-  'pantti', 'pullopantti', 'tölkkipantti', 'alv', 'vero',
-  'maksukortti', 'kuitti', 'tilaus', 'säästit', 'ostostesi',
-  'kuvaus', 'määrä', 'toimitusmaksu', 'henkilökohtainen',
-  'total', 'subtotal', 'tax', 'discount', 'savings', 'change',
-  'cash', 'card', 'credit', 'visa', 'mastercard', 'balance'
+// Skip patterns for header/footer content
+const SKIP_PATTERNS = [
+  /kuitti tilauksestasi/i,
+  /ostostesi kokonaishinta/i,
+  /^tuotteet\s+kuvaus/i,
+  /kuvaus\s+määrä\s+yhteensä/i,
+  /^yhteensä$/i,
+  /^kuvaus$/i,
+  /^määrä$/i,
+  /^maksukortti/i,
+  /^plussa-kortti/i,
+  /^kuittinumero/i,
+  /^tilaus:/i,
+  /^säästit/i,
+  /toimitusmaksun verolliset/i,
 ]
 
 function shouldSkipItem(name: string): boolean {
-  const lower = name.toLowerCase()
-  // Skip if contains skip words
-  if (SKIP_WORDS.some((word) => lower.includes(word))) return true
-  // Skip if name is too short or starts with lowercase single letter + space/number
-  if (name.length < 5) return true
-  // Skip fragment names that don't start with proper word (at least 2 letters)
-  if (!/^[A-ZÄÖÅa-zäöå]{2,}/.test(name)) return true
-  // Skip names that are mostly numbers/units
-  if (/^\d|^[a-z]\s+\d|tai alle/i.test(name)) return true
-  return false
+  const trimmed = name.trim()
+  if (trimmed.length < 3) return true
+  return SKIP_PATTERNS.some((pattern) => pattern.test(trimmed))
+}
+
+function cleanItemName(name: string): string {
+  return name
+    .replace(/Tuotteet\s+Kuvaus\s+määrä\s+yhteensä\s*/gi, '')
+    .replace(/Kuvaus\s+määrä\s+yhteensä\s*/gi, '')
+    .trim()
 }
 
 function generateId(): string {
@@ -32,38 +40,72 @@ function normalizePrice(price: number): number {
 
 export function parseReceipt(ocrText: string): ReceiptItem[] {
   const items: ReceiptItem[] = []
-  const seenPrices = new Map<number, string>() // price -> longest name for that price
+  const seen = new Set<string>()
 
-  // Pattern: item name followed by quantity and price
-  // Matches: "Pirkka mozzarella 200g/125g 3 4,17 €"
-  const itemPattern = /([A-ZÄÖÅa-zäöå][A-ZÄÖÅa-zäöå0-9\s\-\/%.]+?)\s+(\d+(?:[.,]\d+)?\s*(?:kg|g|l|ml|kpl|rl|pack|p|-p)?)\s+(\d{1,3}[.,]\d{2})\s*€/g
+  // Find where the tax summary section starts
+  const taxSectionMatch = ocrText.match(/alv\s+veroton\s+vero\s+verollinen/i)
+  const textBeforeTax = taxSectionMatch && taxSectionMatch.index !== undefined
+    ? ocrText.substring(0, taxSectionMatch.index)
+    : ocrText
 
+  // Find where the discount breakdown section starts (Plussasetti, Plussa-tasaerä, Tasaerä followed by negative price)
+  const discountBreakdownMatch = textBeforeTax.match(/(Plussasetti|Plussa-tasaerä|Tasaerä)\s+-\d{1,3}[.,]\d{2}\s*€/i)
+
+  const mainSectionText = discountBreakdownMatch && discountBreakdownMatch.index !== undefined
+    ? textBeforeTax.substring(0, discountBreakdownMatch.index)
+    : textBeforeTax
+
+  const discountBreakdownText = discountBreakdownMatch && discountBreakdownMatch.index !== undefined
+    ? textBeforeTax.substring(discountBreakdownMatch.index)
+    : ''
+
+  // Pattern for main section items
+  const pricePattern = /([A-ZÄÖÅa-zäöå][A-ZÄÖÅa-zäöå0-9\s\-\/%.,:]+?)\s+(?:(\d+(?:[.,]\d+)?\s*(?:kg|g|l|ml|kpl|rl|pack|p|-p|eur)?)\s+)?(-?\d{1,3}[.,]\d{2})\s*€/g
+
+  // First pass: main section items
   let match
-  while ((match = itemPattern.exec(ocrText)) !== null) {
-    const name = match[1].trim()
+  while ((match = pricePattern.exec(mainSectionText)) !== null) {
+    let name = cleanItemName(match[1].trim())
     const priceStr = match[3].replace(',', '.')
     const price = normalizePrice(parseFloat(priceStr))
 
-    if (price > 0 && price < 500 && !shouldSkipItem(name)) {
-      // Keep the longer name for each price (avoid duplicates with truncated names)
-      const existingName = seenPrices.get(price)
-      if (!existingName || name.length > existingName.length) {
-        seenPrices.set(price, name)
+    if (price === 0) continue
+    if (name.length > 80) continue
+
+    const minLength = price < 0 ? 5 : 3
+
+    if (!shouldSkipItem(name) && name.length >= minLength) {
+      const key = `${name}|${price}`
+      if (!seen.has(key)) {
+        seen.add(key)
+        items.push({ id: generateId(), name, price })
       }
     }
   }
 
-  // Convert map to items array
-  for (const [price, name] of seenPrices) {
-    items.push({ id: generateId(), name, price })
-  }
+  // Second pass: discount breakdown section
+  // Pattern: "DiscountType -price € ProductName quantity"
+  const discountBreakdownPattern = /(Plussa-tasaerä|Plussasetti|Tasaerä)\s+(-\d{1,3}[.,]\d{2})\s*€\s*([A-ZÄÖÅa-zäöå][A-ZÄÖÅa-zäöå0-9\s\-\/%.,:]+?)\s+(\d+)/g
 
-  // Sort by price descending for consistent order
-  items.sort((a, b) => b.price - a.price)
+  while ((match = discountBreakdownPattern.exec(discountBreakdownText)) !== null) {
+    const discountType = match[1].trim()
+    const priceStr = match[2].replace(',', '.')
+    const price = normalizePrice(parseFloat(priceStr))
+    const productName = match[3].trim()
+
+    const name = `${productName} ${discountType}`
+
+    const key = `${name}|${price}`
+    if (!seen.has(key)) {
+      seen.add(key)
+      items.push({ id: generateId(), name, price })
+    }
+  }
 
   return items
 }
 
 export function formatPrice(price: number): string {
-  return price.toFixed(2).replace('.', ',')
+  const formatted = Math.abs(price).toFixed(2).replace('.', ',')
+  return price < 0 ? `-${formatted}` : formatted
 }

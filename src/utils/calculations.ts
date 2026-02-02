@@ -45,7 +45,8 @@ export function calculateSplit(items: CategorizedItem[]): SplitResult {
 }
 
 function formatEuro(price: number): string {
-  return price.toFixed(2).replace('.', ',') + ' €'
+  const formatted = Math.abs(price).toFixed(2).replace('.', ',')
+  return (price < 0 ? '-' : '') + formatted + ' €'
 }
 
 export function formatSplitSummary(result: SplitResult): string {
