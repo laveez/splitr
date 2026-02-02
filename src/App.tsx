@@ -41,10 +41,10 @@ export default function App() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
+    <div className="min-h-screen">
       <div className="mx-auto max-w-md min-h-screen flex flex-col">
         <header className="p-4 text-center">
-          <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100">
+          <h1 className="text-2xl font-bold bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">
             Splitr
           </h1>
           <p className="text-sm text-slate-500 dark:text-slate-400">
