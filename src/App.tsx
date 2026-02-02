@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react'
 import type { Screen, ReceiptItem, CategorizedItem } from './types'
 import UploadScreen from './components/UploadScreen'
+import CropScreen from './components/CropScreen'
 import ProcessingScreen from './components/ProcessingScreen'
 import EditItemsScreen from './components/EditItemsScreen'
 import SwipeScreen from './components/SwipeScreen'
@@ -14,6 +15,20 @@ export default function App() {
 
   const handleFileSelected = useCallback((selectedFile: File) => {
     setFile(selectedFile)
+    // Skip crop for PDFs, go directly to processing
+    if (selectedFile.type === 'application/pdf') {
+      setScreen('processing')
+    } else {
+      setScreen('crop')
+    }
+  }, [])
+
+  const handleCropComplete = useCallback((croppedFile: File) => {
+    setFile(croppedFile)
+    setScreen('processing')
+  }, [])
+
+  const handleSkipCrop = useCallback(() => {
     setScreen('processing')
   }, [])
 
@@ -55,6 +70,14 @@ export default function App() {
         <main className="flex-1 p-4">
           {screen === 'upload' && (
             <UploadScreen onFileSelected={handleFileSelected} />
+          )}
+          {screen === 'crop' && file && (
+            <CropScreen
+              file={file}
+              onCropComplete={handleCropComplete}
+              onSkip={handleSkipCrop}
+              onBack={() => setScreen('upload')}
+            />
           )}
           {screen === 'processing' && file && (
             <ProcessingScreen

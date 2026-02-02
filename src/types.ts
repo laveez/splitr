@@ -11,4 +11,4 @@ export interface CategorizedItem {
   category: Category
 }
 
-export type Screen = 'upload' | 'processing' | 'edit' | 'swipe' | 'results'
+export type Screen = 'upload' | 'crop' | 'processing' | 'edit' | 'swipe' | 'results'
