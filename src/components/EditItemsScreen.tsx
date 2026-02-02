@@ -72,7 +72,7 @@ export default function EditItemsScreen({ items: initialItems, onConfirm, onBack
               className="flex-1 bg-transparent border-none outline-none text-slate-800 dark:text-slate-100 placeholder:text-slate-400"
             />
             <div className="flex items-center gap-1">
-              <span className="text-slate-400">$</span>
+              <span className="text-slate-400">€</span>
               <input
                 type="number"
                 step="0.01"
@@ -104,7 +104,7 @@ export default function EditItemsScreen({ items: initialItems, onConfirm, onBack
       <div className="border-t border-slate-200 dark:border-slate-700 pt-4">
         <div className="flex justify-between text-lg font-medium text-slate-800 dark:text-slate-100 mb-4">
           <span>Total</span>
-          <span>${formatPrice(total)}</span>
+          <span>{formatPrice(total)} €</span>
         </div>
 
         <button

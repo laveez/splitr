@@ -45,13 +45,13 @@ export default function ResultsScreen({ categorizedItems, onStartOver }: Props) 
         <div className="bg-emerald-50 dark:bg-emerald-900/30 rounded-xl p-4 text-center">
           <p className="text-sm text-emerald-600 dark:text-emerald-400 mb-1">Me</p>
           <p className="text-3xl font-bold text-emerald-700 dark:text-emerald-300">
-            ${formatPrice(meOwes)}
+            {formatPrice(meOwes)} €
           </p>
         </div>
         <div className="bg-blue-50 dark:bg-blue-900/30 rounded-xl p-4 text-center">
           <p className="text-sm text-blue-600 dark:text-blue-400 mb-1">You</p>
           <p className="text-3xl font-bold text-blue-700 dark:text-blue-300">
-            ${formatPrice(youOwes)}
+            {formatPrice(youOwes)} €
           </p>
         </div>
       </div>
@@ -59,7 +59,7 @@ export default function ResultsScreen({ categorizedItems, onStartOver }: Props) 
       {result.commonTotal > 0 && (
         <div className="bg-purple-50 dark:bg-purple-900/30 rounded-lg p-3 mb-4 text-center">
           <p className="text-sm text-purple-600 dark:text-purple-400">
-            Shared items total: ${formatPrice(result.commonTotal)} (${formatPrice(halfCommon)} each)
+            Shared items total: {formatPrice(result.commonTotal)} € ({formatPrice(halfCommon)} € each)
           </p>
         </div>
       )}
@@ -83,7 +83,7 @@ export default function ResultsScreen({ categorizedItems, onStartOver }: Props) 
                 {result.meItems.map(({ item }) => (
                   <div key={item.id} className="flex justify-between text-sm text-slate-600 dark:text-slate-300">
                     <span>{item.name}</span>
-                    <span>${formatPrice(item.price)}</span>
+                    <span>{formatPrice(item.price)} €</span>
                   </div>
                 ))}
               </div>
@@ -99,7 +99,7 @@ export default function ResultsScreen({ categorizedItems, onStartOver }: Props) 
                 {result.youItems.map(({ item }) => (
                   <div key={item.id} className="flex justify-between text-sm text-slate-600 dark:text-slate-300">
                     <span>{item.name}</span>
-                    <span>${formatPrice(item.price)}</span>
+                    <span>{formatPrice(item.price)} €</span>
                   </div>
                 ))}
               </div>
@@ -115,7 +115,7 @@ export default function ResultsScreen({ categorizedItems, onStartOver }: Props) 
                 {result.commonItems.map(({ item }) => (
                   <div key={item.id} className="flex justify-between text-sm text-slate-600 dark:text-slate-300">
                     <span>{item.name}</span>
-                    <span>${formatPrice(item.price)}</span>
+                    <span>{formatPrice(item.price)} €</span>
                   </div>
                 ))}
               </div>
@@ -131,7 +131,7 @@ export default function ResultsScreen({ categorizedItems, onStartOver }: Props) 
                 {result.ignoredItems.map(({ item }) => (
                   <div key={item.id} className="flex justify-between text-sm text-slate-400 dark:text-slate-500 line-through">
                     <span>{item.name}</span>
-                    <span>${formatPrice(item.price)}</span>
+                    <span>{formatPrice(item.price)} €</span>
                   </div>
                 ))}
               </div>

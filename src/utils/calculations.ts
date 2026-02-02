@@ -44,6 +44,10 @@ export function calculateSplit(items: CategorizedItem[]): SplitResult {
   return result
 }
 
+function formatEuro(price: number): string {
+  return price.toFixed(2).replace('.', ',') + ' €'
+}
+
 export function formatSplitSummary(result: SplitResult): string {
   const halfCommon = result.commonTotal / 2
   const meOwes = result.meTotal + halfCommon
@@ -57,7 +61,7 @@ export function formatSplitSummary(result: SplitResult): string {
   if (result.meItems.length > 0) {
     lines.push('Me:')
     for (const { item } of result.meItems) {
-      lines.push(`  ${item.name}: $${item.price.toFixed(2)}`)
+      lines.push(`  ${item.name}: ${formatEuro(item.price)}`)
     }
     lines.push('')
   }
@@ -65,7 +69,7 @@ export function formatSplitSummary(result: SplitResult): string {
   if (result.youItems.length > 0) {
     lines.push('You:')
     for (const { item } of result.youItems) {
-      lines.push(`  ${item.name}: $${item.price.toFixed(2)}`)
+      lines.push(`  ${item.name}: ${formatEuro(item.price)}`)
     }
     lines.push('')
   }
@@ -73,14 +77,14 @@ export function formatSplitSummary(result: SplitResult): string {
   if (result.commonItems.length > 0) {
     lines.push('Shared (split 50/50):')
     for (const { item } of result.commonItems) {
-      lines.push(`  ${item.name}: $${item.price.toFixed(2)}`)
+      lines.push(`  ${item.name}: ${formatEuro(item.price)}`)
     }
     lines.push('')
   }
 
   lines.push('---------------------')
-  lines.push(`Me owes: $${meOwes.toFixed(2)}`)
-  lines.push(`You owe: $${youOwes.toFixed(2)}`)
+  lines.push(`Me owes: ${formatEuro(meOwes)}`)
+  lines.push(`You owe: ${formatEuro(youOwes)}`)
 
   return lines.join('\n')
 }

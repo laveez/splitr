@@ -3,8 +3,9 @@ import { useOCR } from '../hooks/useOCR'
 import { parseReceipt } from '../utils/receiptParser'
 import type { ReceiptItem } from '../types'
 import * as pdfjsLib from 'pdfjs-dist'
+import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker
 
 interface Props {
   file: File
@@ -12,50 +13,52 @@ interface Props {
   onError: () => void
 }
 
-async function pdfToImage(file: File): Promise<string> {
+async function extractTextFromPdf(file: File): Promise<string> {
   const arrayBuffer = await file.arrayBuffer()
   const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise
-  const page = await pdf.getPage(1)
+  const textParts: string[] = []
 
-  const scale = 2
-  const viewport = page.getViewport({ scale })
-  const canvas = document.createElement('canvas')
-  const context = canvas.getContext('2d')!
-  canvas.width = viewport.width
-  canvas.height = viewport.height
+  for (let i = 1; i <= pdf.numPages; i++) {
+    const page = await pdf.getPage(i)
+    const textContent = await page.getTextContent()
+    const pageText = textContent.items
+      .map((item) => ('str' in item ? item.str : ''))
+      .join(' ')
+    textParts.push(pageText)
+  }
 
-  await page.render({ canvasContext: context, viewport, canvas }).promise
-  return canvas.toDataURL('image/png')
+  return textParts.join('\n')
 }
 
 export default function ProcessingScreen({ file, onItemsExtracted, onError }: Props) {
   const { progress, isProcessing, error, processImage } = useOCR()
   const [status, setStatus] = useState('Preparing...')
+  const [localProgress, setLocalProgress] = useState(0)
 
   useEffect(() => {
     let cancelled = false
 
     async function process() {
       try {
-        let imageSource: string | File = file
+        let text: string
 
         if (file.type === 'application/pdf') {
-          setStatus('Converting PDF...')
-          imageSource = await pdfToImage(file)
+          setStatus('Reading PDF...')
+          setLocalProgress(0.3)
+          text = await extractTextFromPdf(file)
+          setLocalProgress(1)
+        } else {
+          setStatus('Reading receipt...')
+          text = (await processImage(file)) || ''
         }
-
-        setStatus('Reading receipt...')
-        const text = await processImage(imageSource)
 
         if (cancelled) return
 
-        const items = parseReceipt(text || '')
+        const items = parseReceipt(text)
 
         if (items.length === 0) {
           setStatus('No items found. Please try editing manually.')
-          onItemsExtracted([
-            { id: '1', name: 'Item 1', price: 0 },
-          ])
+          onItemsExtracted([{ id: '1', name: 'Item 1', price: 0 }])
         } else {
           onItemsExtracted(items)
         }
@@ -73,7 +76,8 @@ export default function ProcessingScreen({ file, onItemsExtracted, onError }: Pr
     }
   }, [file, processImage, onItemsExtracted])
 
-  const progressPercent = Math.round(progress * 100)
+  const displayProgress = file.type === 'application/pdf' ? localProgress : progress
+  const progressPercent = Math.round(displayProgress * 100)
 
   return (
     <div className="flex flex-col items-center justify-center py-12">
@@ -96,7 +100,7 @@ export default function ProcessingScreen({ file, onItemsExtracted, onError }: Pr
             strokeWidth="8"
             fill="none"
             strokeDasharray={251.2}
-            strokeDashoffset={251.2 * (1 - progress)}
+            strokeDashoffset={251.2 * (1 - displayProgress)}
             className="text-blue-600 transition-all duration-300"
           />
         </svg>
@@ -119,7 +123,7 @@ export default function ProcessingScreen({ file, onItemsExtracted, onError }: Pr
         </div>
       )}
 
-      {isProcessing && (
+      {isProcessing && file.type !== 'application/pdf' && (
         <p className="text-sm text-slate-400 dark:text-slate-500 mt-4">
           This may take a moment...
         </p>

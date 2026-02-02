@@ -13,7 +13,7 @@ export default function ItemCard({ item }: Props) {
           {item.name}
         </p>
         <p className="text-4xl font-bold text-blue-600 dark:text-blue-400">
-          ${formatPrice(item.price)}
+          {formatPrice(item.price)} €
         </p>
       </div>
 
