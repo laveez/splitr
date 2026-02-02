@@ -7,10 +7,28 @@ import EditItemsScreen from './components/EditItemsScreen'
 import SwipeScreen from './components/SwipeScreen'
 import ResultsScreen from './components/ResultsScreen'
 
+// Test mode: allow tests to inject state via URL params
+// Usage: ?testMode=edit&testItems=[{"id":"1","name":"Item","price":10}]
+function getTestConfig(): { screen?: Screen; items?: ReceiptItem[] } | null {
+  const params = new URLSearchParams(window.location.search)
+  const testMode = params.get('testMode') as Screen | null
+  const testItems = params.get('testItems')
+
+  if (!testMode) return null
+
+  try {
+    const items = testItems ? JSON.parse(testItems) : []
+    return { screen: testMode, items }
+  } catch {
+    return { screen: testMode, items: [] }
+  }
+}
+
 export default function App() {
-  const [screen, setScreen] = useState<Screen>('upload')
+  const testConfig = getTestConfig()
+  const [screen, setScreen] = useState<Screen>(testConfig?.screen || 'upload')
   const [file, setFile] = useState<File | null>(null)
-  const [items, setItems] = useState<ReceiptItem[]>([])
+  const [items, setItems] = useState<ReceiptItem[]>(testConfig?.items || [])
   const [categorizedItems, setCategorizedItems] = useState<CategorizedItem[]>([])
 
   const handleFileSelected = useCallback((selectedFile: File) => {

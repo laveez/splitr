@@ -22,3 +22,12 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Playwright
+test-results/
+playwright-report/
+e2e/test-results.json
+
+# Test files
+k-ruoka.jpg
+k-ruoka.pdf

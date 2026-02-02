@@ -1,4 +1,8 @@
 import type { ReceiptItem } from '../types'
+import { generateId } from './ids'
+import { formatPrice } from './format'
+
+export { formatPrice }
 
 // Skip patterns for header/footer content
 const SKIP_PATTERNS = [
@@ -55,10 +59,6 @@ function cleanItemName(name: string): string {
     .replace(/Tuotteet\s+Kuvaus\s+määrä\s+yhteensä\s*/gi, '')
     .replace(/Kuvaus\s+määrä\s+yhteensä\s*/gi, '')
     .trim()
-}
-
-function generateId(): string {
-  return Math.random().toString(36).substring(2, 9)
 }
 
 function normalizePrice(price: number): number {
@@ -201,9 +201,4 @@ export function parseReceipt(ocrText: string): ReceiptItem[] {
   }
 
   return items
-}
-
-export function formatPrice(price: number): string {
-  const formatted = Math.abs(price).toFixed(2).replace('.', ',')
-  return price < 0 ? `-${formatted}` : formatted
 }

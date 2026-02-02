@@ -1,15 +1,12 @@
 import { useState, useCallback } from 'react'
 import type { ReceiptItem } from '../types'
-import { formatPrice } from '../utils/receiptParser'
+import { formatPrice } from '../utils/format'
+import { generateId } from '../utils/ids'
 
 interface Props {
   items: ReceiptItem[]
   onConfirm: (items: ReceiptItem[]) => void
   onBack: () => void
-}
-
-function generateId(): string {
-  return Math.random().toString(36).substring(2, 9)
 }
 
 export default function EditItemsScreen({ items: initialItems, onConfirm, onBack }: Props) {
@@ -62,6 +59,7 @@ export default function EditItemsScreen({ items: initialItems, onConfirm, onBack
         {items.map((item) => (
           <div
             key={item.id}
+            data-testid={`item-row-${item.id}`}
             className="flex items-center gap-2 bg-white dark:bg-slate-800 rounded-lg p-3 shadow-sm"
           >
             <input
@@ -69,6 +67,7 @@ export default function EditItemsScreen({ items: initialItems, onConfirm, onBack
               value={item.name}
               onChange={(e) => updateItem(item.id, 'name', e.target.value)}
               placeholder="Item name"
+              data-testid={`item-name-${item.id}`}
               className="flex-1 bg-transparent border-none outline-none text-slate-800 dark:text-slate-100 placeholder:text-slate-400"
             />
             <div className="flex items-center gap-1">
@@ -80,11 +79,13 @@ export default function EditItemsScreen({ items: initialItems, onConfirm, onBack
                 value={item.price || ''}
                 onChange={(e) => updateItem(item.id, 'price', e.target.value)}
                 placeholder="0.00"
+                data-testid={`item-price-${item.id}`}
                 className="w-20 bg-transparent border-none outline-none text-right text-slate-800 dark:text-slate-100 placeholder:text-slate-400"
               />
             </div>
             <button
               onClick={() => deleteItem(item.id)}
+              data-testid={`item-delete-${item.id}`}
               className="text-slate-400 hover:text-red-500 p-1"
               aria-label="Delete item"
             >
@@ -96,6 +97,7 @@ export default function EditItemsScreen({ items: initialItems, onConfirm, onBack
 
       <button
         onClick={addItem}
+        data-testid="add-item-button"
         className="w-full border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-lg py-3 text-slate-500 dark:text-slate-400 hover:border-blue-400 hover:text-blue-500 transition-colors mb-4"
       >
         + Add Item
@@ -104,12 +106,13 @@ export default function EditItemsScreen({ items: initialItems, onConfirm, onBack
       <div className="border-t border-slate-200 dark:border-slate-700 pt-4">
         <div className="flex justify-between text-lg font-medium text-slate-800 dark:text-slate-100 mb-4">
           <span>Total</span>
-          <span>{formatPrice(total)} €</span>
+          <span data-testid="edit-total">{formatPrice(total)} €</span>
         </div>
 
         <button
           onClick={() => onConfirm(items.filter((item) => item.name.trim()))}
           disabled={validItems.length === 0}
+          data-testid="confirm-items-button"
           className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-medium py-3 px-4 rounded-lg transition-colors"
         >
           Looks Good ({validItems.length} items)

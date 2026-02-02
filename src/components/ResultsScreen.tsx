@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback } from 'react'
 import type { CategorizedItem } from '../types'
 import { calculateSplit, formatSplitSummary } from '../utils/calculations'
-import { formatPrice } from '../utils/receiptParser'
+import { formatPrice } from '../utils/format'
 
 interface Props {
   categorizedItems: CategorizedItem[]
@@ -44,13 +44,13 @@ export default function ResultsScreen({ categorizedItems, onStartOver }: Props) 
       <div className="grid grid-cols-2 gap-4 mb-6">
         <div className="bg-emerald-50 dark:bg-emerald-900/30 rounded-xl p-4 text-center">
           <p className="text-sm text-emerald-600 dark:text-emerald-400 mb-1">Me</p>
-          <p className="text-3xl font-bold text-emerald-700 dark:text-emerald-300">
+          <p data-testid="total-me" className="text-3xl font-bold text-emerald-700 dark:text-emerald-300">
             {formatPrice(meOwes)} €
           </p>
         </div>
         <div className="bg-blue-50 dark:bg-blue-900/30 rounded-xl p-4 text-center">
           <p className="text-sm text-blue-600 dark:text-blue-400 mb-1">You</p>
-          <p className="text-3xl font-bold text-blue-700 dark:text-blue-300">
+          <p data-testid="total-you" className="text-3xl font-bold text-blue-700 dark:text-blue-300">
             {formatPrice(youOwes)} €
           </p>
         </div>
@@ -143,6 +143,7 @@ export default function ResultsScreen({ categorizedItems, onStartOver }: Props) 
       <div className="space-y-3 mt-auto">
         <button
           onClick={handleCopy}
+          data-testid="copy-summary"
           className="w-full flex items-center justify-center gap-2 bg-slate-800 dark:bg-slate-100 hover:bg-slate-700 dark:hover:bg-slate-200 text-white dark:text-slate-800 font-medium py-3 px-4 rounded-lg transition-colors"
         >
           {copied ? (
@@ -160,6 +161,7 @@ export default function ResultsScreen({ categorizedItems, onStartOver }: Props) 
 
         <button
           onClick={onStartOver}
+          data-testid="start-over"
           className="w-full text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 font-medium py-3 px-4 transition-colors"
         >
           Split Another Receipt

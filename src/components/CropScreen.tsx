@@ -1,12 +1,6 @@
 import { useState, useCallback, useEffect } from 'react'
 import Cropper from 'react-easy-crop'
-
-interface Area {
-  x: number
-  y: number
-  width: number
-  height: number
-}
+import type { Area } from '../types'
 
 interface Props {
   file: File

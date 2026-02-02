@@ -1,4 +1,5 @@
 import type { CategorizedItem } from '../types'
+import { formatEuro } from './format'
 
 export interface SplitResult {
   meTotal: number
@@ -42,11 +43,6 @@ export function calculateSplit(items: CategorizedItem[]): SplitResult {
   }
 
   return result
-}
-
-function formatEuro(price: number): string {
-  const formatted = Math.abs(price).toFixed(2).replace('.', ',')
-  return (price < 0 ? '-' : '') + formatted + ' €'
 }
 
 export function formatSplitSummary(result: SplitResult): string {

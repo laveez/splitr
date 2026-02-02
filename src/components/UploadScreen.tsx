@@ -52,6 +52,7 @@ export default function UploadScreen({ onFileSelected }: Props) {
   return (
     <div className="flex flex-col gap-4">
       <div
+        data-testid="upload-dropzone"
         className={`
           border-2 border-dashed rounded-xl p-8 text-center transition-colors cursor-pointer
           ${isDragging
@@ -77,6 +78,7 @@ export default function UploadScreen({ onFileSelected }: Props) {
           accept="image/*,application/pdf"
           className="hidden"
           onChange={handleFileInput}
+          data-testid="file-input"
         />
       </div>
 
@@ -92,6 +94,7 @@ export default function UploadScreen({ onFileSelected }: Props) {
       </div>
 
       <button
+        data-testid="camera-button"
         onClick={() => cameraInputRef.current?.click()}
         className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition-colors"
       >
