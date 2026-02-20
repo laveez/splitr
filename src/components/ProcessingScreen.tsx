@@ -95,7 +95,7 @@ export default function ProcessingScreen({ file, onItemsExtracted, onError }: Pr
             stroke="currentColor"
             strokeWidth="8"
             fill="none"
-            className="text-slate-200 dark:text-slate-700"
+            className="text-slate-700"
           />
           <circle
             cx="48"
@@ -106,22 +106,22 @@ export default function ProcessingScreen({ file, onItemsExtracted, onError }: Pr
             fill="none"
             strokeDasharray={251.2}
             strokeDashoffset={251.2 * (1 - displayProgress)}
-            className="text-blue-600 transition-all duration-300"
+            className="text-violet-500 transition-all duration-300"
           />
         </svg>
-        <span className="absolute inset-0 flex items-center justify-center text-lg font-semibold text-slate-700 dark:text-slate-200">
+        <span className="absolute inset-0 flex items-center justify-center text-lg font-semibold text-slate-200">
           {progressPercent}%
         </span>
       </div>
 
-      <p className="text-slate-600 dark:text-slate-300 mb-2">{status}</p>
+      <p className="text-slate-300 mb-2">{status}</p>
 
       {error && (
         <div className="mt-4 text-center">
           <p className="text-red-500 mb-4">Failed to process receipt</p>
           <button
             onClick={onError}
-            className="text-blue-600 hover:text-blue-700 dark:text-blue-400"
+            className="text-violet-400 hover:text-violet-300"
           >
             Try again
           </button>
@@ -129,7 +129,7 @@ export default function ProcessingScreen({ file, onItemsExtracted, onError }: Pr
       )}
 
       {isProcessing && file.type !== 'application/pdf' && (
-        <p className="text-sm text-slate-400 dark:text-slate-500 mt-4">
+        <p className="text-sm text-slate-500 mt-4">
           This may take a moment...
         </p>
       )}
@@ -147,7 +147,7 @@ export default function ProcessingScreen({ file, onItemsExtracted, onError }: Pr
       {!DEBUG_MODE && debugInfo.ocrText && (
         <button
           onClick={() => setShowDebug(!showDebug)}
-          className="mt-4 text-sm text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
+          className="mt-4 text-sm text-slate-400 hover:text-slate-300"
         >
           {showDebug ? 'Hide debug info' : 'Show debug info'}
         </button>

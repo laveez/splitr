@@ -99,19 +99,19 @@ export default function CropScreen({ file, onCropComplete, onSkip, onBack }: Pro
       <div className="flex items-center justify-between mb-4">
         <button
           onClick={onBack}
-          className="text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
+          className="text-slate-400 hover:text-slate-200"
         >
           ← Back
         </button>
         <button
           onClick={onSkip}
-          className="text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
+          className="text-slate-400 hover:text-slate-200"
         >
           Skip crop →
         </button>
       </div>
 
-      <p className="text-sm text-slate-600 dark:text-slate-300 mb-4 text-center">
+      <p className="text-sm text-slate-300 mb-4 text-center">
         Crop to the receipt area for better OCR results
       </p>
 
@@ -129,7 +129,7 @@ export default function CropScreen({ file, onCropComplete, onSkip, onBack }: Pro
       </div>
 
       <div className="mt-4 flex items-center gap-4">
-        <span className="text-sm text-slate-500 dark:text-slate-400">Zoom</span>
+        <span className="text-sm text-slate-400">Zoom</span>
         <input
           type="range"
           min={1}
@@ -137,14 +137,14 @@ export default function CropScreen({ file, onCropComplete, onSkip, onBack }: Pro
           step={0.1}
           value={zoom}
           onChange={(e) => setZoom(Number(e.target.value))}
-          className="flex-1 h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer"
+          className="flex-1 h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer"
         />
       </div>
 
       <button
         onClick={handleCrop}
         disabled={isProcessing || !croppedAreaPixels}
-        className="mt-4 w-full bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 disabled:from-slate-400 disabled:to-slate-400 text-white font-medium py-3 px-4 rounded-xl transition-all shadow-md hover:shadow-lg disabled:shadow-none"
+        className="mt-4 w-full bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 disabled:from-slate-600 disabled:to-slate-600 text-white font-medium py-3 px-4 rounded-xl transition-all shadow-md hover:shadow-lg disabled:shadow-none"
       >
         {isProcessing ? 'Processing...' : 'Crop & Continue'}
       </button>

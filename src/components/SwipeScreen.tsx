@@ -68,16 +68,16 @@ export default function SwipeScreen({ items, onComplete, onBack }: Props) {
       <div className="flex items-center justify-between mb-4">
         <button
           onClick={onBack}
-          className="text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
+          className="text-slate-400 hover:text-slate-200"
         >
           ← Back
         </button>
-        <span className="text-sm text-slate-500 dark:text-slate-400">
+        <span className="text-sm text-slate-400">
           {isComplete ? items.length : currentIndex + 1} of {items.length}
         </span>
       </div>
 
-      <div data-testid="swipe-progress-bar" className="w-full bg-slate-200/60 dark:bg-slate-700/60 rounded-full h-2 mb-4">
+      <div data-testid="swipe-progress-bar" className="w-full bg-slate-700/60 rounded-full h-2 mb-4">
         <div
           className="bg-gradient-to-r from-violet-500 to-indigo-500 h-2 rounded-full transition-all duration-300"
           style={{ width: `${progress}%` }}
@@ -102,13 +102,13 @@ export default function SwipeScreen({ items, onComplete, onBack }: Props) {
 
         {isComplete && (
           <div className="absolute inset-0 flex items-center justify-center">
-            <p className="text-slate-400 dark:text-slate-500">Processing results...</p>
+            <p className="text-slate-500">Processing results...</p>
           </div>
         )}
       </div>
 
       {showHint && !isComplete && (
-        <div className="bg-indigo-50/80 dark:bg-indigo-900/30 rounded-xl p-3 mb-4 text-center text-sm text-indigo-600 dark:text-indigo-300 shadow-sm">
+        <div className="bg-indigo-900/30 rounded-xl p-3 mb-4 text-center text-sm text-indigo-300 shadow-sm">
           Swipe the card to categorize: left for me, right for you, up if shared, down to ignore
         </div>
       )}
@@ -118,7 +118,7 @@ export default function SwipeScreen({ items, onComplete, onBack }: Props) {
           onClick={() => handleButtonSwipe('left')}
           disabled={isComplete}
           data-testid="swipe-me"
-          className="flex flex-col items-center p-3 bg-teal-100/80 dark:bg-teal-900/40 rounded-xl text-teal-700 dark:text-teal-300 hover:bg-teal-200/80 dark:hover:bg-teal-800/50 disabled:opacity-50 transition-all shadow-sm hover:shadow"
+          className="flex flex-col items-center p-3 bg-teal-900/40 rounded-xl text-teal-300 hover:bg-teal-800/50 disabled:opacity-50 transition-all shadow-sm hover:shadow"
         >
           <span className="text-xl">👈</span>
           <span className="text-xs mt-1 font-medium">Me</span>
@@ -127,7 +127,7 @@ export default function SwipeScreen({ items, onComplete, onBack }: Props) {
           onClick={() => handleButtonSwipe('up')}
           disabled={isComplete}
           data-testid="swipe-common"
-          className="flex flex-col items-center p-3 bg-violet-100/80 dark:bg-violet-900/40 rounded-xl text-violet-700 dark:text-violet-300 hover:bg-violet-200/80 dark:hover:bg-violet-800/50 disabled:opacity-50 transition-all shadow-sm hover:shadow"
+          className="flex flex-col items-center p-3 bg-violet-900/40 rounded-xl text-violet-300 hover:bg-violet-800/50 disabled:opacity-50 transition-all shadow-sm hover:shadow"
         >
           <span className="text-xl">👆</span>
           <span className="text-xs mt-1 font-medium">Common</span>
@@ -136,7 +136,7 @@ export default function SwipeScreen({ items, onComplete, onBack }: Props) {
           onClick={() => handleButtonSwipe('right')}
           disabled={isComplete}
           data-testid="swipe-you"
-          className="flex flex-col items-center p-3 bg-sky-100/80 dark:bg-sky-900/40 rounded-xl text-sky-700 dark:text-sky-300 hover:bg-sky-200/80 dark:hover:bg-sky-800/50 disabled:opacity-50 transition-all shadow-sm hover:shadow"
+          className="flex flex-col items-center p-3 bg-sky-900/40 rounded-xl text-sky-300 hover:bg-sky-800/50 disabled:opacity-50 transition-all shadow-sm hover:shadow"
         >
           <span className="text-xl">👉</span>
           <span className="text-xs mt-1 font-medium">You</span>
@@ -145,7 +145,7 @@ export default function SwipeScreen({ items, onComplete, onBack }: Props) {
           onClick={() => handleButtonSwipe('down')}
           disabled={isComplete}
           data-testid="swipe-ignore"
-          className="flex flex-col items-center p-3 bg-slate-100/80 dark:bg-slate-800/60 rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-200/80 dark:hover:bg-slate-700/60 disabled:opacity-50 transition-all shadow-sm hover:shadow"
+          className="flex flex-col items-center p-3 bg-slate-800/60 rounded-xl text-slate-400 hover:bg-slate-700/60 disabled:opacity-50 transition-all shadow-sm hover:shadow"
         >
           <span className="text-xl">👇</span>
           <span className="text-xs mt-1 font-medium">Skip</span>

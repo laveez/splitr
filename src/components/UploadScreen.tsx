@@ -56,8 +56,8 @@ export default function UploadScreen({ onFileSelected }: Props) {
         className={`
           border-2 border-dashed rounded-xl p-8 text-center transition-colors cursor-pointer
           ${isDragging
-            ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-            : 'border-slate-300 dark:border-slate-600 hover:border-blue-400 dark:hover:border-blue-500'
+            ? 'border-violet-500 bg-violet-900/20'
+            : 'border-slate-600 hover:border-violet-500'
           }
         `}
         onDragOver={handleDragOver}
@@ -66,10 +66,10 @@ export default function UploadScreen({ onFileSelected }: Props) {
         onClick={() => fileInputRef.current?.click()}
       >
         <div className="text-4xl mb-3">📄</div>
-        <p className="text-slate-700 dark:text-slate-200 font-medium mb-1">
+        <p className="text-slate-200 font-medium mb-1">
           Drop receipt here
         </p>
-        <p className="text-sm text-slate-500 dark:text-slate-400">
+        <p className="text-sm text-slate-400">
           or click to browse
         </p>
         <input
@@ -84,10 +84,10 @@ export default function UploadScreen({ onFileSelected }: Props) {
 
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-slate-200 dark:border-slate-700" />
+          <div className="w-full border-t border-slate-700" />
         </div>
         <div className="relative flex justify-center text-sm">
-          <span className="bg-slate-50 dark:bg-slate-900 px-2 text-slate-500 dark:text-slate-400">
+          <span className="bg-slate-900 px-2 text-slate-400">
             or
           </span>
         </div>
@@ -96,7 +96,7 @@ export default function UploadScreen({ onFileSelected }: Props) {
       <button
         data-testid="camera-button"
         onClick={() => cameraInputRef.current?.click()}
-        className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition-colors"
+        className="flex items-center justify-center gap-2 bg-violet-600 hover:bg-violet-700 text-white font-medium py-3 px-4 rounded-lg transition-colors"
       >
         <span>📷</span>
         <span>Take Photo</span>
@@ -110,7 +110,7 @@ export default function UploadScreen({ onFileSelected }: Props) {
         onChange={handleFileInput}
       />
 
-      <p className="text-xs text-center text-slate-400 dark:text-slate-500 mt-4">
+      <p className="text-xs text-center text-slate-500 mt-4">
         Supports JPEG, PNG, WebP images and PDF files
       </p>
     </div>
