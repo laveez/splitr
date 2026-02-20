@@ -1,6 +1,10 @@
 # Splitr
 
-A web app for splitting receipts between two people using a Tinder-like swipe interface.
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Node](https://img.shields.io/badge/Node-18%2B-green.svg)](https://nodejs.org)
+[![React](https://img.shields.io/badge/React-19-61dafb.svg)](https://react.dev)
+
+Split receipts between two people with a Tinder-like swipe interface.
 
 **Live demo:** https://laveez.github.io/splitr/
 

@@ -1,12 +1,36 @@
 {
   "name": "splitr",
-  "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "Split receipts between two people with a Tinder-like swipe interface",
+  "author": "laveez",
+  "license": "MIT",
   "type": "module",
+  "homepage": "https://laveez.github.io/splitr/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/laveez/splitr.git"
+  },
+  "bugs": {
+    "url": "https://github.com/laveez/splitr/issues"
+  },
+  "keywords": [
+    "receipt-splitting",
+    "ocr",
+    "react",
+    "typescript",
+    "tailwind",
+    "vite",
+    "tesseract",
+    "playwright"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "preview": "vite preview",
     "test": "playwright test",
     "test:ui": "playwright test --ui",

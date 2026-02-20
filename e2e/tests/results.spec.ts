@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test'
 test.describe('Results Screen', () => {
   // Helper to set up the results screen by going through swipe with specific categorization
   async function setupResultsScreen(
-    page: any,
+    page: import('@playwright/test').Page,
     items: { id: string; name: string; price: number }[],
     categorization: ('me' | 'you' | 'common' | 'ignore')[]
   ) {

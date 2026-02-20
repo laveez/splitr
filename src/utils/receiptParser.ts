@@ -91,7 +91,7 @@ export function parseReceipt(ocrText: string): ReceiptItem[] {
     : ''
 
   // Pattern for items with € symbol (online receipts like K-Ruoka)
-  const pricePatternWithEuro = /([A-ZÄÖÅa-zäöå][A-ZÄÖÅa-zäöå0-9\s\-\/%.,:]+?)\s+(?:(\d+(?:[.,]\d+)?\s*(?:kg|g|l|ml|kpl|rl|pack|p|-p|eur)?)\s+)?(-?\d{1,3}[.,]\d{2})\s*€/g
+  const pricePatternWithEuro = /([A-ZÄÖÅa-zäöå][A-ZÄÖÅa-zäöå0-9\s\-/%.,:]+?)\s+(?:(\d+(?:[.,]\d+)?\s*(?:kg|g|l|ml|kpl|rl|pack|p|-p|eur)?)\s+)?(-?\d{1,3}[.,]\d{2})\s*€/g
 
   // Pattern for items without € symbol (physical receipts)
   // Matches: "Item name    3,99" at end of line
@@ -100,7 +100,7 @@ export function parseReceipt(ocrText: string): ReceiptItem[] {
   // First pass: try pattern with € symbol
   let match
   while ((match = pricePatternWithEuro.exec(mainSectionText)) !== null) {
-    let name = cleanItemName(match[1].trim())
+    const name = cleanItemName(match[1].trim())
     const priceStr = match[3].replace(',', '.')
     const price = normalizePrice(parseFloat(priceStr))
 
@@ -121,7 +121,7 @@ export function parseReceipt(ocrText: string): ReceiptItem[] {
   // Second pass: if no items found with €, try without € (physical receipts)
   if (items.length === 0) {
     while ((match = pricePatternNoEuro.exec(mainSectionText)) !== null) {
-      let name = cleanItemName(match[1].trim())
+      const name = cleanItemName(match[1].trim())
       const priceStr = match[2].replace(',', '.')
       const price = normalizePrice(parseFloat(priceStr))
 
@@ -157,7 +157,7 @@ export function parseReceipt(ocrText: string): ReceiptItem[] {
       const priceIndex = lastMatch.index!
       let name = line.substring(0, priceIndex).trim()
         .replace(/\s+/g, ' ')  // Normalize whitespace
-        .replace(/[^A-ZÄÖÅa-zäöå0-9\s\-\/%.,:]/g, '') // Remove garbage chars
+        .replace(/[^A-ZÄÖÅa-zäöå0-9\s\-/%.,:]/g, '') // Remove garbage chars
         .trim()
 
       // Clean up common patterns
@@ -183,7 +183,7 @@ export function parseReceipt(ocrText: string): ReceiptItem[] {
 
   // Second pass: discount breakdown section
   // Pattern: "DiscountType -price € ProductName quantity"
-  const discountBreakdownPattern = /(Plussa-tasaerä|Plussasetti|Tasaerä)\s+(-\d{1,3}[.,]\d{2})\s*€\s*([A-ZÄÖÅa-zäöå][A-ZÄÖÅa-zäöå0-9\s\-\/%.,:]+?)\s+(\d+)/g
+  const discountBreakdownPattern = /(Plussa-tasaerä|Plussasetti|Tasaerä)\s+(-\d{1,3}[.,]\d{2})\s*€\s*([A-ZÄÖÅa-zäöå][A-ZÄÖÅa-zäöå0-9\s\-/%.,:]+?)\s+(\d+)/g
 
   while ((match = discountBreakdownPattern.exec(discountBreakdownText)) !== null) {
     const discountType = match[1].trim()
