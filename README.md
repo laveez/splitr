@@ -1,192 +1,93 @@
+<div align="center">
+
 # Splitr
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Node](https://img.shields.io/badge/Node-18%2B-green.svg)](https://nodejs.org)
-[![React](https://img.shields.io/badge/React-19-61dafb.svg)](https://react.dev)
+**Swipe to split**
 
 Split receipts between two people with a Tinder-like swipe interface.
 
-**Live demo:** https://laveez.github.io/splitr/
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE)
+[![Node.js 18+](https://img.shields.io/badge/Node.js-18%2B-brightgreen?style=flat-square)](https://nodejs.org)
+[![React 19](https://img.shields.io/badge/React-19-61DAFB?style=flat-square)](https://react.dev)
+[![Vite](https://img.shields.io/badge/Vite-7-646CFF?style=flat-square)](https://vite.dev)
+
+</div>
+
+---
+
+### Contents
+
+[Features](#features) · [Quick Start](#quick-start) · [Scripts](#scripts) · [How It Works](#how-it-works) · [Current Limitations](#current-limitations) · [Contributing](#contributing)
+
+---
 
 ## Features
 
-- Upload receipt images (PNG, JPG, WebP) or PDFs
-- OCR text extraction from images using Tesseract.js
-- Direct text extraction from PDFs with selectable text
-- Optional image cropping to improve OCR accuracy
-- Edit detected items before splitting
-- Tinder-style swipe interface to categorize items:
-  - 👈 Left = Me
-  - 👉 Right = You
-  - 👆 Up = Common (split 50/50)
-  - 👇 Down = Ignore
-- Copy results summary to clipboard
+- **Receipt upload** — PNG, JPG, WebP images or PDF files; camera capture on mobile
+- **OCR extraction** — Tesseract.js for images, pdfjs-dist for selectable-text PDFs
+- **Optional cropping** — crop to receipt area for better OCR accuracy
+- **Item editing** — fix names, adjust prices, add/remove items before splitting
+- **Swipe to categorize** — Tinder-style cards: left = Me, right = You, up = Common (50/50), down = Ignore
+- **Instant results** — see the final split and copy a summary to clipboard
+- **Debug & test modes** — `?debug=true` for raw OCR output; `?testMode=edit` to bypass OCR in tests
 
-## How It Works
-
-### 1. Upload
-Drop a receipt image or PDF, or take a photo directly from your phone. The app accepts JPEG, PNG, WebP images and PDF files.
-
-### 2. Crop (optional)
-For images, you can optionally crop to just the receipt area. This improves OCR accuracy by removing background noise.
-
-### 3. Processing
-- **Images**: Tesseract.js runs OCR to extract text from the image
-- **PDFs**: Text is extracted directly using pdfjs-dist (much faster and more accurate)
-
-### 4. Edit Items
-Review and edit the detected items. You can:
-- Fix item names that were misread
-- Adjust prices
-- Add items that weren't detected
-- Delete items you don't want to split
-
-### 5. Swipe to Categorize
-Each item appears as a card. Swipe (or tap the buttons) to categorize:
-- **Me**: I'm paying for this item
-- **You**: You're paying for this item
-- **Common**: We'll split this 50/50
-- **Ignore**: Don't include in the split
-
-### 6. Results
-See the final split showing how much each person owes. Copy the summary to share.
-
-## Current Limitations
-
-> **Note:** The receipt parser is currently optimized for **Finnish K-Ruoka grocery receipts**. It handles Finnish-specific patterns like:
-> - Euro currency format (comma as decimal separator)
-> - Finnish discount types (Plussa-tasaerä, Plussasetti, Tasaerä)
-> - K-Ruoka receipt structure and tax summary detection
-
-To adapt for other receipt formats, the parsing logic in `src/utils/receiptParser.ts` needs to be extended with additional patterns.
-
-## Project Structure
-
-```
-src/
-├── components/         # React components
-│   ├── UploadScreen.tsx      # File upload UI
-│   ├── CropScreen.tsx        # Image cropping
-│   ├── ProcessingScreen.tsx  # OCR processing
-│   ├── EditItemsScreen.tsx   # Item editing
-│   ├── SwipeScreen.tsx       # Swipe categorization
-│   ├── ResultsScreen.tsx     # Final results
-│   ├── ItemCard.tsx          # Swipeable item card
-│   └── DebugPanel.tsx        # Debug info display
-├── hooks/              # Custom React hooks
-│   ├── useOCR.ts             # Tesseract.js wrapper
-│   └── useDarkMode.ts        # Dark mode detection
-├── utils/              # Utility functions
-│   ├── receiptParser.ts      # OCR text parsing
-│   ├── calculations.ts       # Split calculations
-│   ├── pdfExtractor.ts       # PDF text extraction
-│   ├── format.ts             # Price formatting
-│   ├── colors.ts             # Card color palette
-│   └── ids.ts                # ID generation
-├── types.ts            # TypeScript types
-└── App.tsx             # Main app component
-```
-
-## Tech Stack
-
-- React 19 + TypeScript + Vite
-- Tailwind CSS v4
-- Tesseract.js (client-side OCR)
-- pdfjs-dist (PDF text extraction)
-- react-tinder-card (swipe gestures)
-- react-easy-crop (image cropping)
-- Playwright (e2e testing)
-
-## Development
+## Quick Start
 
 ```bash
+git clone https://github.com/laveez/splitr.git
+cd splitr
 npm install --legacy-peer-deps
 npm run dev
 ```
 
 The `--legacy-peer-deps` flag is needed due to react-tinder-card peer dependency on React 18.
 
-### Debug Mode
+Opens at [localhost:5173](http://localhost:5173).
 
-Add `?debug=true` to the URL to enable debug mode, which shows:
-- Raw OCR text output
-- Parsed items before editing
-- Processed image preview
+## Scripts
 
-### Test Mode
+| Command | Description |
+|---|---|
+| `npm run dev` | Start dev server |
+| `npm run build` | TypeScript check + production build |
+| `npm run lint` | Run ESLint |
+| `npm run lint:fix` | Run ESLint with auto-fix |
+| `npm test` | Run Playwright e2e tests |
+| `npm run test:ui` | Run tests with Playwright UI |
+| `npm run test:headed` | Run tests in headed browser |
 
-For automated testing, you can skip OCR and go directly to specific screens with pre-populated items:
+## How It Works
 
+```mermaid
+flowchart LR
+    A[Upload<br/>image / PDF] --> B[Crop<br/>optional]
+    B --> C[OCR / Extract<br/>Tesseract · pdfjs]
+    C --> D[Edit items<br/>fix · add · remove]
+    D --> E[Swipe cards<br/>Me · You · Common · Ignore]
+    E --> F[Results<br/>totals · clipboard]
+
+    style A fill:#2d4a2d
+    style C fill:#38608c
+    style E fill:#2d4a2d
 ```
-/?testMode=edit&testItems=[{"id":"1","name":"Apple","price":2.50}]
-/?testMode=swipe&testItems=[{"id":"1","name":"Banana","price":1.99}]
-```
 
-This is used by the Playwright tests to bypass slow OCR processing.
+Images are processed client-side with Tesseract.js OCR; PDFs with selectable text use pdfjs-dist for direct extraction. Detected items are parsed into name/price pairs, editable before the swipe phase. Each swipe assigns the item to a person, splits it 50/50, or ignores it.
 
-## Testing
+## Current Limitations
 
-The project includes Playwright e2e tests for all major flows.
+> **Note:** The receipt parser is optimized for **Finnish K-Ruoka grocery receipts** — euro currency format, Finnish discount types (Plussa-tasaerä, Plussasetti, Tasaerä), and K-Ruoka receipt structure. To support other formats, extend the parsing logic in `src/utils/receiptParser.ts`.
+
+## Contributing
+
+Contributions are welcome! Open an issue or submit a PR.
 
 ```bash
-# Install Playwright browsers (first time)
-npx playwright install
-
-# Run tests
-npm test
-
-# Run tests with UI
-npm run test:ui
-
-# Run tests in headed mode
-npm run test:headed
+git clone https://github.com/laveez/splitr.git
+cd splitr
+npm install --legacy-peer-deps
+npm run dev
 ```
-
-### Test Structure
-
-```
-e2e/
-├── tests/
-│   ├── upload.spec.ts      # Upload flow tests
-│   ├── edit-items.spec.ts  # Item editing tests
-│   ├── swipe.spec.ts       # Swipe flow tests
-│   └── results.spec.ts     # Results calculation tests
-├── helpers/
-│   └── testHelpers.ts      # Test utilities
-└── fixtures/               # Test fixtures
-```
-
-### Data Test IDs
-
-Key elements have `data-testid` attributes for reliable test targeting:
-
-| Element | Test ID |
-|---------|---------|
-| Upload dropzone | `upload-dropzone` |
-| File input | `file-input` |
-| Camera button | `camera-button` |
-| Item name input | `item-name-{id}` |
-| Item price input | `item-price-{id}` |
-| Add item button | `add-item-button` |
-| Confirm button | `confirm-items-button` |
-| Swipe Me button | `swipe-me` |
-| Swipe You button | `swipe-you` |
-| Swipe Common button | `swipe-common` |
-| Swipe Ignore button | `swipe-ignore` |
-| Progress bar | `swipe-progress-bar` |
-| Me total | `total-me` |
-| You total | `total-you` |
-| Copy summary button | `copy-summary` |
-| Start over button | `start-over` |
-
-## Building
-
-```bash
-npm run build
-```
-
-Output is in the `dist/` folder, configured for GitHub Pages deployment at `/splitr/`.
 
 ## License
 
-MIT
+[MIT](LICENSE)
