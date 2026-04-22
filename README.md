@@ -7,9 +7,9 @@
 Split receipts between two people with a Tinder-like swipe interface.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE)
-[![Node.js 18+](https://img.shields.io/badge/Node.js-18%2B-brightgreen?style=flat-square)](https://nodejs.org)
+[![Node.js 20+](https://img.shields.io/badge/Node.js-20%2B-brightgreen?style=flat-square)](https://nodejs.org)
 [![React 19](https://img.shields.io/badge/React-19-61DAFB?style=flat-square)](https://react.dev)
-[![Vite](https://img.shields.io/badge/Vite-7-646CFF?style=flat-square)](https://vite.dev)
+[![Vite](https://img.shields.io/badge/Vite-8-646CFF?style=flat-square)](https://vite.dev)
 
 </div>
 
