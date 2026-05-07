@@ -1,6 +1,6 @@
 {
   "name": "splitr",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Split receipts between two people with a Tinder-like swipe interface",
   "author": "laveez",
   "license": "MIT",
