@@ -37,7 +37,7 @@
     "test:headed": "playwright test --headed"
   },
   "dependencies": {
-    "@react-spring/web": "^10.0.3",
+    "@react-spring/web": "^10.1.0",
     "@tailwindcss/vite": "^4.2.4",
     "pdfjs-dist": "^5.7.284",
     "react": "^19.2.6",
