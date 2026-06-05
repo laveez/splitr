@@ -41,7 +41,7 @@
     "@tailwindcss/vite": "^4.2.4",
     "pdfjs-dist": "^5.7.284",
     "react": "^19.2.6",
-    "react-dom": "^19.2.6",
+    "react-dom": "^19.2.7",
     "react-easy-crop": "^5.5.7",
     "react-tinder-card": "^1.6.4",
     "tailwindcss": "^4.2.4",
